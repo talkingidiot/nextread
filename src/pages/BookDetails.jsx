@@ -1,30 +1,68 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './BookDetails.css'
+// src/pages/BookDetails.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { booksAPI, reservationsAPI } from '../services/api';
+import './BookDetails.css';
 
 export default function BookDetails() {
-  const navigate = useNavigate()
-  const [reserved, setReserved] = useState(false)
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { user } = useAuth();
+  const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [reserving, setReserving] = useState(false);
+  const [reserved, setReserved] = useState(false);
+  const [error, setError] = useState('');
 
-  // Mock book data
-  const book = {
-    id: 1,
-    title: 'Book Title',
-    author: 'Author name',
-    isbn: '9760-7632-7346-5',
-    genre: 'Genre',
-    rating: 4.5,
-    totalCopies: 5,
-    availableCopies: 3,
-    inQueue: 2,
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries of Robotic exploration but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset software like Aldus PageMaker including versions of Lorem Ipsum.',
+  useEffect(() => {
+    loadBook();
+  }, [id]);
+
+  async function loadBook() {
+    try {
+      setLoading(true);
+      const data = await booksAPI.getBookById(id);
+      setBook(data);
+    } catch (err) {
+      setError('Failed to load book details');
+      console.error('Error loading book:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleReserve() {
-    setReserved(true)
-    // TODO: call API to reserve book
-    console.log('Book reserved:', book.id)
+  async function handleReserve() {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setReserving(true);
+      setError('');
+      await reservationsAPI.reserveBook(user.id, book.id);
+      setReserved(true);
+      
+      // Refresh book data to update available copies
+      await loadBook();
+    } catch (err) {
+      setError(err.message || 'Failed to reserve book');
+    } finally {
+      setReserving(false);
+    }
   }
+
+  if (loading) {
+    return <div className="loading">Loading book details...</div>;
+  }
+
+  if (!book) {
+    return <div className="error">Book not found</div>;
+  }
+
+  const isAvailable = book.availableCopies > 0;
+  const stars = '⭐'.repeat(Math.floor(book.rating)) + '☆'.repeat(5 - Math.floor(book.rating));
 
   return (
     <div className="book-details-page">
@@ -41,7 +79,7 @@ export default function BookDetails() {
           <div className="book-image-large"></div>
           <div className="book-stats">
             <div className="rating">
-              <span className="stars">⭐⭐⭐⭐☆</span>
+              <span className="stars">{stars}</span>
               <span className="rating-value">{book.rating}</span>
             </div>
             <div className="stat-row">
@@ -54,7 +92,7 @@ export default function BookDetails() {
             </div>
             <div className="stat-row">
               <span className="stat-label">In Queue</span>
-              <span className="stat-value">{book.inQueue}</span>
+              <span className="stat-value">{book.inQueue || 0}</span>
             </div>
           </div>
         </div>
@@ -64,28 +102,54 @@ export default function BookDetails() {
           <div className="genre-badge">{book.genre}</div>
           <h1 className="book-title">{book.title}</h1>
           <p className="book-author">{book.author}</p>
-          <p className="book-isbn">{book.isbn}</p>
+          <p className="book-isbn">ISBN: {book.isbn}</p>
 
           <div className="description-section">
             <h3 className="section-title">Description</h3>
             <p className="description-text">{book.description}</p>
           </div>
 
+          {error && (
+            <div className="error-message" style={{ 
+              color: 'red', 
+              padding: '0.5rem', 
+              marginBottom: '1rem',
+              backgroundColor: '#fee',
+              borderRadius: '4px'
+            }}>
+              {error}
+            </div>
+          )}
+
+          {reserved && (
+            <div className="success-message" style={{ 
+              color: 'green', 
+              padding: '0.5rem', 
+              marginBottom: '1rem',
+              backgroundColor: '#efe',
+              borderRadius: '4px'
+            }}>
+              Book successfully reserved! Check your reservations page.
+            </div>
+          )}
+
           <div className="availability-message">
-            <span className="availability-status available">
-              This book is available for reservation. Click the button below to reserve your copy
+            <span className={`availability-status ${isAvailable ? 'available' : 'unavailable'}`}>
+              {isAvailable
+                ? 'This book is available for reservation. Click the button below to reserve your copy'
+                : 'This book is currently unavailable. You can join the queue.'}
             </span>
           </div>
 
           <button
             className={`reserve-btn ${reserved ? 'reserved' : ''}`}
             onClick={handleReserve}
-            disabled={reserved}
+            disabled={reserved || reserving}
           >
-            {reserved ? 'Book Reserved' : 'Reserve Book'}
+            {reserving ? 'Reserving...' : reserved ? 'Book Reserved' : 'Reserve Book'}
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

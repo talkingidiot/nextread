@@ -1,27 +1,41 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+// src/pages/Login.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { authAPI } from '../services/api';
 
 export default function Login() {
-  const navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    // TODO: wire to auth API
-    console.log('login', { username, password })
-    // Navigate to home on successful login
-    navigate('/home')
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const user = await authAPI.login(email, password);
+      login(user);
+      navigate('/home');
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
+    } finally {
+      setLoading(false);
+    }
   }
 
   function fillDemoStudent() {
-    setUsername('student')
-    setPassword('student123')
+    setEmail('student@university.edu');
+    setPassword('student123');
   }
 
   function fillDemoAdmin() {
-    setUsername('admin')
-    setPassword('admin')
+    setEmail('admin@university.edu');
+    setPassword('admin');
   }
 
   return (
@@ -35,15 +49,29 @@ export default function Login() {
       <div className="card">
         <h2 className="card-title">Welcome Back</h2>
         <form onSubmit={handleSubmit} className="login-form">
+          {error && (
+            <div style={{ 
+              color: 'red', 
+              marginBottom: '1rem', 
+              padding: '0.5rem', 
+              backgroundColor: '#fee', 
+              borderRadius: '4px' 
+            }}>
+              {error}
+            </div>
+          )}
+
           <label className="field">
-            <div className="label">Username</div>
+            <div className="label">Email</div>
             <div className="input-wrap">
               <span className="icon">👤</span>
               <input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
                 required
+                disabled={loading}
               />
             </div>
           </label>
@@ -58,11 +86,14 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
+                disabled={loading}
               />
             </div>
           </label>
 
-          <button className="btn-login" type="submit">Login</button>
+          <button className="btn-login" type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
 
           <div className="forgot">
             <a href="#">Forgot password?</a>
@@ -73,19 +104,19 @@ export default function Login() {
       <div className="demo-section">
         <div className="demo-card">
           <span className="demo-label">Demo Student</span>
-          <span className="demo-text">Enter any username and password</span>
+          <span className="demo-text">student@university.edu / student123</span>
           <button type="button" className="demo-btn" onClick={fillDemoStudent}>
             Fill Demo Student
           </button>
         </div>
         <div className="demo-card">
           <span className="demo-label">Demo Admin</span>
-          <span className="demo-text">Username: admin, any password</span>
+          <span className="demo-text">admin@university.edu / admin</span>
           <button type="button" className="demo-btn" onClick={fillDemoAdmin}>
             Fill Demo Admin
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

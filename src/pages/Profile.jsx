@@ -1,50 +1,93 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './Profile.css'
+// src/pages/Profile.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { reservationsAPI } from '../services/api';
+import './Profile.css';
 
 export default function Profile() {
-  const navigate = useNavigate()
-  const [isEditing, setIsEditing] = useState(false)
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [stats, setStats] = useState({
+    totalReservations: 0,
+    activeReservations: 0,
+    booksRead: 0,
+  });
 
-  // Mock user data
-  const [user, setUser] = useState({
-    name: 'John Doe',
-    studentId: '12-3456-789',
-    email: 'john.doe@university.edu',
-    phone: '+1 (555) 123-4567',
-    membershipStatus: 'Active Member',
-    joinDate: 'January 15, 2023',
-  })
+  useEffect(() => {
+    if (user) {
+      setEditForm(user);
+      loadUserStats();
+    }
+  }, [user]);
 
-  const [editForm, setEditForm] = useState(user)
+  async function loadUserStats() {
+    try {
+      // Load active reservations
+      const activeRes = await reservationsAPI.getUserReservations(user.id, 'Active');
+      const historyRes = await reservationsAPI.getUserReservations(user.id, 'History');
+      const queueRes = await reservationsAPI.getUserReservations(user.id, 'Queue');
+
+      setStats({
+        totalReservations: activeRes.length + historyRes.length + queueRes.length,
+        activeReservations: activeRes.length,
+        booksRead: historyRes.length,
+      });
+    } catch (err) {
+      console.error('Error loading user stats:', err);
+    }
+  }
 
   function handleEdit() {
-    setIsEditing(true)
-    setEditForm(user)
+    setIsEditing(true);
   }
 
   function handleSave() {
-    setUser(editForm)
-    setIsEditing(false)
+    // TODO: Implement API call to update user profile
+    console.log('Save user data:', editForm);
+    alert('Profile updated successfully! (Backend update to be implemented)');
+    setIsEditing(false);
   }
 
   function handleCancel() {
-    setIsEditing(false)
+    setEditForm(user);
+    setIsEditing(false);
   }
 
   function handleChange(e) {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setEditForm((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
+  }
+
+  function handleLogout() {
+    logout();
+    navigate('/login');
+  }
+
+  function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  if (!user) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="profile-page">
       {/* Header */}
       <header className="profile-header">
-        <div className="header-brand">
+        <div className="header-brand" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
           <img src="/logo.svg" alt="NextRead" className="header-logo" />
           <span className="header-text">NextRead</span>
         </div>
@@ -55,8 +98,7 @@ export default function Profile() {
           <button className="nav-btn" onClick={() => navigate('/home')}>
             Browse Books
           </button>
-          <button className="nav-btn">Add</button>
-          <button className="nav-btn logout-btn" onClick={() => navigate('/login')}>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </nav>
@@ -88,7 +130,7 @@ export default function Profile() {
                   <div className="user-info">
                     <h3 className="user-name">{user.name}</h3>
                     <p className="student-id">Student ID: {user.studentId}</p>
-                    <button className="member-badge">{user.membershipStatus}</button>
+                    <button className="member-badge">{user.membershipStatus || 'Active'}</button>
                   </div>
                 </div>
 
@@ -99,11 +141,15 @@ export default function Profile() {
                   </div>
                   <div className="info-row">
                     <span className="info-label">Phone</span>
-                    <span className="info-value">{user.phone}</span>
+                    <span className="info-value">{user.phone || 'Not provided'}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Role</span>
+                    <span className="info-value">{user.role}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Member Since</span>
-                    <span className="info-value">{user.joinDate}</span>
+                    <span className="info-value">{formatDate(user.joinDate)}</span>
                   </div>
                 </div>
               </div>
@@ -114,7 +160,7 @@ export default function Profile() {
                   <input
                     type="text"
                     name="name"
-                    value={editForm.name}
+                    value={editForm.name || ''}
                     onChange={handleChange}
                   />
                 </div>
@@ -124,7 +170,7 @@ export default function Profile() {
                   <input
                     type="email"
                     name="email"
-                    value={editForm.email}
+                    value={editForm.email || ''}
                     onChange={handleChange}
                   />
                 </div>
@@ -134,7 +180,7 @@ export default function Profile() {
                   <input
                     type="tel"
                     name="phone"
-                    value={editForm.phone}
+                    value={editForm.phone || ''}
                     onChange={handleChange}
                   />
                 </div>
@@ -156,23 +202,23 @@ export default function Profile() {
             <h2>Account Summary</h2>
             <div className="summary-item">
               <span className="summary-label">Total Reservations</span>
-              <span className="summary-value">7</span>
+              <span className="summary-value">{stats.totalReservations}</span>
             </div>
             <div className="summary-item">
               <span className="summary-label">Active Reservations</span>
-              <span className="summary-value">2</span>
+              <span className="summary-value">{stats.activeReservations}</span>
             </div>
             <div className="summary-item">
               <span className="summary-label">Books Read</span>
-              <span className="summary-value">15</span>
+              <span className="summary-value">{stats.booksRead}</span>
             </div>
             <div className="summary-item">
               <span className="summary-label">Membership Status</span>
-              <span className="summary-value status">Active</span>
+              <span className="summary-value status">{user.membershipStatus || 'Active'}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,80 +1,83 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './MyReservations.css'
+// src/pages/MyReservations.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { reservationsAPI } from '../services/api';
+import './MyReservations.css';
 
 export default function MyReservations() {
-  const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('Active')
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState('Active');
+  const [reservations, setReservations] = useState({
+    Active: [],
+    Queue: [],
+    History: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Mock reservation data
-  const reservations = {
-    Active: [
-      {
-        id: 1,
-        title: 'Book Title',
-        author: 'Book Author',
-        reservedDate: '11/10/2025',
-        status: 'Currently Borrowed',
-        dueDate: '11/25/2025',
-        image: '/book-1.svg',
-      },
-      {
-        id: 2,
-        title: 'Book Title',
-        author: 'Book Author',
-        reservedDate: '11/10/2025',
-        status: 'Please pick up within 48 hours',
-        dueDate: '11/18/2025',
-        image: '/book-2.svg',
-      },
-    ],
-    Queue: [
-      {
-        id: 3,
-        title: 'Book Title',
-        author: 'Book Author',
-        reservedDate: '11/10/2025',
-        status: 'In Queue',
-        position: 2,
-        estimatedWait: '28 Days',
-        peopleAhead: 2,
-        image: '/book-3.svg',
-      },
-    ],
-    History: [
-      {
-        id: 4,
-        title: 'Book Title',
-        author: 'Book Author',
-        returnedDate: '11/05/2025',
-        status: 'Returned',
-        image: '/book-4.svg',
-      },
-      {
-        id: 5,
-        title: 'Book Title',
-        author: 'Book Author',
-        returnedDate: '10/30/2025',
-        status: 'Returned',
-        image: '/book-5.svg',
-      },
-    ],
+  useEffect(() => {
+    if (user) {
+      loadReservations();
+    }
+  }, [user, activeTab]);
+
+  async function loadReservations() {
+    try {
+      setLoading(true);
+      const data = await reservationsAPI.getUserReservations(user.id, activeTab);
+      setReservations((prev) => ({
+        ...prev,
+        [activeTab]: data,
+      }));
+    } catch (err) {
+      setError('Failed to load reservations');
+      console.error('Error loading reservations:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const currentReservations = reservations[activeTab] || []
-
   function getTabCount(tab) {
-    return reservations[tab]?.length || 0
+    return reservations[tab]?.length || 0;
+  }
+
+  async function handleCancel(id) {
+    if (!window.confirm('Are you sure you want to cancel this reservation?')) {
+      return;
+    }
+
+    try {
+      await reservationsAPI.cancelReservation(id);
+      alert('Reservation cancelled successfully!');
+      loadReservations(); // Reload to reflect changes
+    } catch (err) {
+      alert('Failed to cancel reservation: ' + err.message);
+    }
   }
 
   function handleRenew(id) {
-    console.log('Renew reservation:', id)
-    alert('Renewal request submitted!')
+    // TODO: Implement renew functionality in backend
+    console.log('Renew reservation:', id);
+    alert('Renewal request submitted! (Feature to be implemented)');
   }
 
-  function handleCancel(id) {
-    console.log('Cancel reservation:', id)
-    alert('Reservation cancelled!')
+  function handleLogout() {
+    logout();
+    navigate('/login');
+  }
+
+  const currentReservations = reservations[activeTab] || [];
+
+  function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: '2-digit', 
+      day: '2-digit', 
+      year: 'numeric' 
+    });
   }
 
   return (
@@ -86,11 +89,13 @@ export default function MyReservations() {
           <span className="header-text">NextRead</span>
         </div>
         <nav className="header-nav">
-          <button className="nav-btn">Browse Books</button>
-          <button className="nav-btn" onClick={() => navigate('/profile')}>
-            Add
+          <button className="nav-btn" onClick={() => navigate('/home')}>
+            Browse Books
           </button>
-          <button className="nav-btn logout-btn" onClick={() => navigate('/login')}>
+          <button className="nav-btn" onClick={() => navigate('/profile')}>
+            Profile
+          </button>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </nav>
@@ -102,6 +107,8 @@ export default function MyReservations() {
           <h1>My Reservations</h1>
           <p>Manage your book reservations and queue positions</p>
         </div>
+
+        {error && <div className="error-message">{error}</div>}
 
         {/* Tabs */}
         <div className="tabs-section">
@@ -120,24 +127,30 @@ export default function MyReservations() {
 
         {/* Reservations List */}
         <div className="reservations-list">
-          {currentReservations.length > 0 ? (
+          {loading ? (
+            <div className="loading">Loading reservations...</div>
+          ) : currentReservations.length > 0 ? (
             currentReservations.map((reservation) => (
               <div key={reservation.id} className="reservation-card">
                 <div className="reservation-image"></div>
                 <div className="reservation-info">
-                  <h3 className="book-title">{reservation.title}</h3>
-                  <p className="book-author">{reservation.author}</p>
+                  <h3 className="book-title">{reservation.book.title}</h3>
+                  <p className="book-author">{reservation.book.author}</p>
 
                   {activeTab === 'Active' && (
                     <>
                       <div className="reservation-detail">
                         <span className="detail-label">Reserved on:</span>
-                        <span className="detail-value">{reservation.reservedDate}</span>
+                        <span className="detail-value">{formatDate(reservation.reservedDate)}</span>
                       </div>
+                      {reservation.dueDate && (
+                        <div className="reservation-detail">
+                          <span className="detail-label">Due Date:</span>
+                          <span className="detail-value">{formatDate(reservation.dueDate)}</span>
+                        </div>
+                      )}
                       <div className="status-row">
-                        <span className={`status-badge ${reservation.status === 'Currently Borrowed' ? 'borrowed' : 'pending'}`}>
-                          {reservation.status}
-                        </span>
+                        <span className="status-badge borrowed">{reservation.status}</span>
                       </div>
                     </>
                   )}
@@ -146,17 +159,21 @@ export default function MyReservations() {
                     <>
                       <div className="reservation-detail">
                         <span className="detail-label">Reserved on:</span>
-                        <span className="detail-value">{reservation.reservedDate}</span>
+                        <span className="detail-value">{formatDate(reservation.reservedDate)}</span>
                       </div>
                       <div className="queue-info">
-                        <div className="queue-wait">
-                          <span className="queue-label">Estimated Wait:</span>
-                          <span className="queue-value">{reservation.estimatedWait}</span>
-                        </div>
-                        <div className="queue-position">
-                          <span className="position-icon">👥</span>
-                          <span className="position-text">{reservation.peopleAhead} people ahead of you</span>
-                        </div>
+                        {reservation.estimatedWait && (
+                          <div className="queue-wait">
+                            <span className="queue-label">Estimated Wait:</span>
+                            <span className="queue-value">{reservation.estimatedWait}</span>
+                          </div>
+                        )}
+                        {reservation.position && (
+                          <div className="queue-position">
+                            <span className="position-icon">👥</span>
+                            <span className="position-text">Position {reservation.position} in queue</span>
+                          </div>
+                        )}
                       </div>
                     </>
                   )}
@@ -165,7 +182,7 @@ export default function MyReservations() {
                     <>
                       <div className="reservation-detail">
                         <span className="detail-label">Returned on:</span>
-                        <span className="detail-value">{reservation.returnedDate}</span>
+                        <span className="detail-value">{formatDate(reservation.reservedDate)}</span>
                       </div>
                       <div className="status-row">
                         <span className="status-badge returned">{reservation.status}</span>
@@ -202,5 +219,5 @@ export default function MyReservations() {
         </div>
       </div>
     </div>
-  )
+  );
 }
