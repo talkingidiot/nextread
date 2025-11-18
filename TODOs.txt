@@ -8,3 +8,4 @@ TODO: When a book has a lot of student in queue it should show an estimated time
 TODO: A Student should specify for how long are they gonna be borrowing the copy of the book.
 TODO: When it's the students turn to borrow the book and there's been no response to the said student the book shall be borrowed by the student next in queue. [approximately 24hrs]
 TODO: Make UI consistent for every page.
+TODO: Make admin dashboard.
