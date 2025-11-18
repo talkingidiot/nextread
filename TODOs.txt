@@ -1,0 +1,10 @@
+TODO: Admin can create an account for the user.
+TODO: Student can configure their user profile.
+TODO: When reserving for a book and there's already students in queue the book shouldn't be listed in the active reservation tab instead it should be in the queue reservation tab.
+TODO: Admin can manage user accounts and books available.
+TODO: When filtering for a specific book/genre it should only show books of the selected genre.
+TODO: A Student can only reserve one copy of a book.
+TODO: When a book has a lot of student in queue it should show an estimated time for how long a student should wait for the book they want to borrow (depending on how long the book is gonna be borrowed for).
+TODO: A Student should specify for how long are they gonna be borrowing the copy of the book.
+TODO: When it's the students turn to borrow the book and there's been no response to the said student the book shall be borrowed by the student next in queue. [approximately 24hrs]
+TODO: Make UI consistent for every page.
