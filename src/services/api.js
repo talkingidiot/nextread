@@ -22,6 +22,17 @@ export const authAPI = {
     });
     return handleResponse(response);
   },
+
+  register: async (name, email, password, studentId, phone) => {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password, studentId, phone }),
+    });
+    return handleResponse(response);
+  },
 };
 
 // Books API

@@ -1,6 +1,6 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 
@@ -97,6 +97,13 @@ export default function Login() {
 
           <div className="forgot">
             <a href="#">Forgot password?</a>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '1rem', color: '#666' }}>
+            <span>Don't have an account? </span>
+            <Link to="/register" style={{ color: '#007bff', textDecoration: 'none', fontWeight: '600' }}>
+              Register here
+            </Link>
           </div>
         </form>
       </div>

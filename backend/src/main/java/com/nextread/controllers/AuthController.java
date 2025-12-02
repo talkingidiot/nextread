@@ -23,11 +23,44 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials"); // Unauthorized
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            // Check if user already exists
+            if (userService.userExists(request.getEmail())) {
+                return ResponseEntity.status(400).body("Email already registered");
+            }
+
+            // Create new user
+            User user = userService.createUser(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getStudentId(),
+                request.getPhone()
+            );
+
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Registration failed: " + e.getMessage());
+        }
+    }
     
     // DTO for login request
     @Data
     public static class LoginRequest {
         private String email;
         private String password;
+    }
+
+    // DTO for register request
+    @Data
+    public static class RegisterRequest {
+        private String name;
+        private String email;
+        private String password;
+        private String studentId;
+        private String phone;
     }
 }
