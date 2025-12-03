@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     // Custom queries, e.g., find by user and status
     List<Reservation> findByUserIdAndStatus(Long userId, String status);
+    List<Reservation> findByBookIdAndStatus(Long userId, String status);
 }

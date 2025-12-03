@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { reservationsAPI } from '../services/api';
+import { reservationsAPI, usersAPI } from '../services/api';
 import './Profile.css';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, login } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
   const [stats, setStats] = useState({
     totalReservations: 0,
     activeReservations: 0,
@@ -18,17 +19,23 @@ export default function Profile() {
 
   useEffect(() => {
     if (user) {
-      setEditForm(user);
+      setEditForm({
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        studentId: user.studentId
+      });
       loadUserStats();
     }
   }, [user]);
 
   async function loadUserStats() {
     try {
-      // Load active reservations
-      const activeRes = await reservationsAPI.getUserReservations(user.id, 'Active');
-      const historyRes = await reservationsAPI.getUserReservations(user.id, 'History');
-      const queueRes = await reservationsAPI.getUserReservations(user.id, 'Queue');
+      const [activeRes, historyRes, queueRes] = await Promise.all([
+        reservationsAPI.getUserReservations(user.id, 'Active'),
+        reservationsAPI.getUserReservations(user.id, 'History'),
+        reservationsAPI.getUserReservations(user.id, 'Queue')
+      ]);
 
       setStats({
         totalReservations: activeRes.length + historyRes.length + queueRes.length,
@@ -44,15 +51,32 @@ export default function Profile() {
     setIsEditing(true);
   }
 
-  function handleSave() {
-    // TODO: Implement API call to update user profile
-    console.log('Save user data:', editForm);
-    alert('Profile updated successfully! (Backend update to be implemented)');
-    setIsEditing(false);
+  async function handleSave() {
+    setSaving(true);
+    try {
+      const updatedUser = await usersAPI.updateUser(user.id, editForm);
+      
+      // Update the user in context with the new data
+      const fullUpdatedUser = { ...user, ...updatedUser };
+      login(fullUpdatedUser);
+      
+      alert('Profile updated successfully!');
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile: ' + err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handleCancel() {
-    setEditForm(user);
+    setEditForm({
+      name: user.name,
+      email: user.email,
+      phone: user.phone || '',
+      studentId: user.studentId
+    });
     setIsEditing(false);
   }
 
@@ -80,24 +104,32 @@ export default function Profile() {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
     <div className="profile-page">
       {/* Header */}
       <header className="profile-header">
-        <div className="header-brand" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
+        <div className="header-brand" onClick={() => navigate(user.role === 'ADMIN' ? '/admin' : '/home')} style={{ cursor: 'pointer' }}>
           <img src="/logo.svg" alt="NextRead" className="header-logo" />
           <span className="header-text">NextRead</span>
         </div>
         <nav className="header-nav">
-          <button className="nav-btn" onClick={() => navigate('/reservations')}>
-            My Reservations
-          </button>
-          <button className="nav-btn" onClick={() => navigate('/home')}>
-            Browse Books
-          </button>
+          {user.role === 'ADMIN' ? (
+            <button className="nav-btn" onClick={() => navigate('/admin')}>
+              Admin Dashboard
+            </button>
+          ) : (
+            <>
+              <button className="nav-btn" onClick={() => navigate('/reservations')}>
+                My Reservations
+              </button>
+              <button className="nav-btn" onClick={() => navigate('/home')}>
+                Browse Books
+              </button>
+            </>
+          )}
           <button className="nav-btn logout-btn" onClick={handleLogout}>
             Logout
           </button>
@@ -162,6 +194,7 @@ export default function Profile() {
                     name="name"
                     value={editForm.name || ''}
                     onChange={handleChange}
+                    disabled={saving}
                   />
                 </div>
 
@@ -172,6 +205,7 @@ export default function Profile() {
                     name="email"
                     value={editForm.email || ''}
                     onChange={handleChange}
+                    disabled={saving}
                   />
                 </div>
 
@@ -182,14 +216,34 @@ export default function Profile() {
                     name="phone"
                     value={editForm.phone || ''}
                     onChange={handleChange}
+                    disabled={saving}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Student ID</label>
+                  <input
+                    type="text"
+                    name="studentId"
+                    value={editForm.studentId || ''}
+                    onChange={handleChange}
+                    disabled={saving}
                   />
                 </div>
 
                 <div className="form-actions">
-                  <button className="btn-save" onClick={handleSave}>
-                    Save Changes
+                  <button 
+                    className="btn-save" 
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
                   </button>
-                  <button className="btn-cancel" onClick={handleCancel}>
+                  <button 
+                    className="btn-cancel" 
+                    onClick={handleCancel}
+                    disabled={saving}
+                  >
                     Cancel
                   </button>
                 </div>

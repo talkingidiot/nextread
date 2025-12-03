@@ -1,4 +1,4 @@
-// BookService.java - Complete Version
+// BookService.java - COMPLETE VERSION WITH ALL METHODS
 package com.nextread.services;
 
 import com.nextread.entities.Book;

@@ -9,27 +9,23 @@ import BookDetails from './pages/BookDetails';
 import MyReservations from './pages/MyReservations';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import TestAdmin from './pages/TestAdmin';
 
 // Protected Route Component
 function ProtectedRoute({ children, adminOnly = false }) {
   const { isAuthenticated, user } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
-  // If route is admin only and user is not admin, redirect to home
+
   if (adminOnly && user?.role !== 'ADMIN') {
     return <Navigate to="/home" replace />;
   }
-  
-  // If user is admin trying to access student routes, redirect to admin
-  if (!adminOnly && user?.role === 'ADMIN') {
-    return <Navigate to="/admin" replace />;
-  }
-  
+
   return children;
 }
+
 
 function AppRoutes() {
   return (
@@ -47,7 +43,7 @@ function AppRoutes() {
       <Route
         path="/admin"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute adminOnly>
             <AdminDashboard />
           </ProtectedRoute>
         }
@@ -76,6 +72,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/test-admin" element={<TestAdmin />} />
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

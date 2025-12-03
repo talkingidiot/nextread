@@ -47,6 +47,11 @@ export const booksAPI = {
     return handleResponse(response);
   },
 
+  getBooksByGenre: async (genre) => {
+    const response = await fetch(`${API_BASE_URL}/books?genre=${genre}`);
+    return handleResponse(response);
+  },
+
   createBook: async (book) => {
     const response = await fetch(`${API_BASE_URL}/books`, {
       method: 'POST',
@@ -59,45 +64,72 @@ export const booksAPI = {
   },
 
   updateBook: async (id, book) => {
-    console.log('Updating book:', id, book);
-    
-    try {
-      const response = await fetch(`${API_BASE_URL}/books/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(book),
-      });
-      return handleResponse(response);
-    } catch (error) {
-      console.error('Update book error:', error);
-      throw error;
-    }
+    const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(book),
+    });
+    return handleResponse(response);
   },
 
   deleteBook: async (id) => {
-    console.log('Deleting book:', id);
+    const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      method: 'DELETE',
+    });
     
-    try {
-      const response = await fetch(`${API_BASE_URL}/books/${id}`, {
-        method: 'DELETE',
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to delete book');
-      }
-      
-      return response.text();
-    } catch (error) {
-      console.error('Delete book error:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to delete book');
     }
+    
+    return response.text();
+  },
+};
+
+// Users API
+export const usersAPI = {
+  getAllUsers: async () => {
+    const response = await fetch(`${API_BASE_URL}/users`);
+    return handleResponse(response);
+  },
+
+  getUserById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`);
+    return handleResponse(response);
+  },
+
+  updateUser: async (id, userData) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    return handleResponse(response);
+  },
+
+  deleteUser: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete user');
+    }
+    
+    return response.text();
   },
 };
 
 // Reservations API
 export const reservationsAPI = {
+  getAllReservations: async () => {
+    const response = await fetch(`${API_BASE_URL}/reservations`);
+    return handleResponse(response);
+  },
+
   getUserReservations: async (userId, status) => {
     const response = await fetch(
       `${API_BASE_URL}/reservations/user/${userId}?status=${status}`
@@ -105,13 +137,13 @@ export const reservationsAPI = {
     return handleResponse(response);
   },
 
-  reserveBook: async (userId, bookId) => {
+  reserveBook: async (userId, bookId, borrowDays = 14) => {
     const response = await fetch(`${API_BASE_URL}/reservations/reserve`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId, bookId }),
+      body: JSON.stringify({ userId, bookId, borrowDays }),
     });
     return handleResponse(response);
   },
@@ -125,6 +157,19 @@ export const reservationsAPI = {
     );
     if (!response.ok) {
       throw new Error('Failed to cancel reservation');
+    }
+    return response.text();
+  },
+
+  returnBook: async (reservationId) => {
+    const response = await fetch(
+      `${API_BASE_URL}/reservations/${reservationId}/return`,
+      {
+        method: 'PUT',
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to return book');
     }
     return response.text();
   },
