@@ -216,3 +216,136 @@
     padding: 16px;
   }
 }
+
+/* -------------------------------
+   BOOK DETAILS – UI ANIMATIONS
+-------------------------------- */
+
+/* Page fade-in */
+.book-details-page {
+  animation: detailsFadeIn 0.4s ease forwards;
+}
+
+@keyframes detailsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Back button micro interaction */
+.back-btn {
+  transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-2px);
+}
+
+.back-btn:active {
+  transform: translateX(0) scale(0.97);
+}
+
+/* Book image card hover lift */
+.book-image-large {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.book-image-large:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Stat rows subtle hover */
+.stat-row {
+  transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.stat-row:hover {
+  background: #f8fafc;
+  padding-left: 4px;
+}
+
+/* Book info card entrance */
+.book-info-card {
+  animation: infoCardFade 0.5s ease;
+}
+
+@keyframes infoCardFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Genre badge hover */
+.genre-badge {
+  transition: transform 0.2s ease;
+}
+
+.genre-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Title text subtle entrance */
+.book-title {
+  animation: titleFloatIn 0.4s ease;
+}
+
+@keyframes titleFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Description fade effect */
+.description-section {
+  animation: descFadeIn 0.5s ease;
+}
+
+@keyframes descFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Availability message pulse */
+.availability-message {
+  transition: transform 0.25s ease;
+}
+
+.availability-message:hover {
+  transform: scale(1.01);
+}
+
+/* Reserve button animations */
+.reserve-btn {
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.reserve-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.reserve-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}

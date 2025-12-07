@@ -630,3 +630,160 @@
     font-size: 0.8rem;
   }
 }
+
+/* -------------------------------
+   CLEAN UI ANIMATION ENHANCEMENTS
+   (Non-layout breaking)
+-------------------------------- */
+
+/* Global smoothness */
+* {
+  transition: background-color .25s ease, 
+              box-shadow .25s ease, 
+              transform .2s ease, 
+              border-color .2s ease;
+}
+
+/* Page fade in */
+.admin-dashboard {
+  animation: adminFadeIn 0.4s ease forwards;
+}
+
+@keyframes adminFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header hover polish */
+.header-brand:hover {
+  transform: translateY(-1px);
+}
+
+/* Nav buttons micro-interactions */
+.nav-btn:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Sidebar buttons – smooth active feel */
+.sidebar-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-btn:hover {
+  transform: translateX(3px);
+}
+
+.sidebar-btn.active {
+  animation: activePulse 0.35s ease;
+}
+
+@keyframes activePulse {
+  0% { transform: scale(0.98); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* Page switching smoother feel */
+.admin-content {
+  animation: contentFade 0.35s ease;
+}
+
+@keyframes contentFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stat cards */
+.stat-card {
+  transition: transform .2s ease, box-shadow .25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* Buttons */
+.btn-primary,
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.btn-primary:hover,
+.btn-edit:hover,
+.btn-delete:hover,
+.btn-save:hover,
+.btn-cancel:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary:active,
+.btn-edit:active,
+.btn-delete:active,
+.btn-save:active,
+.btn-cancel:active {
+  transform: scale(0.98) translateY(1px);
+}
+
+/* Search input focus animation */
+.search-input {
+  transition: box-shadow .25s ease, transform .15s ease;
+}
+
+.search-input:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+}
+
+/* Table row hover effect */
+.books-table tbody tr {
+  transition: background-color .25s ease, transform .15s ease;
+}
+
+.books-table tbody tr:hover {
+  transform: scale(1.003);
+}
+
+/* Modal animation polish */
+.modal-content {
+  animation: modalPop 0.35s ease;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Input focus effect inside modal */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.12);
+  transform: translateY(-1px);
+}
+
+/* Tab content smooth appearance */
+.overview-tab,
+.books-tab,
+.users-tab,
+.reservations-tab {
+  animation: tabFadeIn 0.3s ease;
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

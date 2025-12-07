@@ -366,3 +366,123 @@
     padding: 4px 8px;
   }
 }
+
+/* -------------------------------
+   PROFILE PAGE – UI ANIMATIONS
+-------------------------------- */
+
+/* Page entrance */
+.profile-page {
+  animation: profileFadeIn 0.4s ease forwards;
+}
+
+@keyframes profileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header micro interactions */
+.header-brand {
+  transition: transform 0.2s ease;
+}
+
+.header-brand:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.nav-btn:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn:active {
+  transform: scale(0.97) translateY(1px);
+}
+
+/* Cards soft lift on hover */
+.profile-card {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* Avatar hover */
+.avatar {
+  transition: transform .25s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Edit button polish */
+.edit-btn {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.edit-btn:hover {
+  transform: translateY(-1px);
+}
+
+.edit-btn:active {
+  transform: scale(0.97);
+}
+
+/* Info rows subtle hover */
+.info-row {
+  transition: background-color .2s ease, padding-left .2s ease;
+  border-radius: 6px;
+}
+
+.info-row:hover {
+  background: #f8fafc;
+  padding-left: 4px;
+}
+
+/* Input interaction in edit mode */
+.form-group input {
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+
+.form-group input:focus {
+  transform: translateY(-1px);
+}
+
+/* Buttons animation */
+.btn-save,
+.btn-cancel {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.btn-save:hover,
+.btn-cancel:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.btn-save:active,
+.btn-cancel:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Summary cards pulse */
+.summary-item {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.summary-item:hover {
+  transform: scale(1.01);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+}

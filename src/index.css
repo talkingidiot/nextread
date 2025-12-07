@@ -6,7 +6,11 @@
   --accent: #0b1220;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  transition: background-color .25s ease, box-shadow .25s ease, transform .2s ease, border-color .2s ease;
+}
+
 html,body,#root{
   margin:0;
   padding:0;
@@ -14,7 +18,9 @@ html,body,#root{
 
 body{
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: radial-gradient(1200px 600px at 10% 20%, #f3f9ff 0%, transparent 30%), radial-gradient(900px 500px at 95% 80%, #fff3fb 0%, transparent 30%), linear-gradient(180deg,var(--bg1),var(--bg2));
+  background: radial-gradient(1200px 600px at 10% 20%, #f3f9ff 0%, transparent 30%),
+              radial-gradient(900px 500px at 95% 80%, #fff3fb 0%, transparent 30%),
+              linear-gradient(180deg,var(--bg1),var(--bg2));
   -webkit-font-smoothing:antialiased;
   overflow-x: hidden;
 }
@@ -22,6 +28,12 @@ body{
 #root{
   width:100%;
   min-height:100vh;
+}
+
+/* ---------- Page entrance animation ---------- */
+@keyframes pageFadeIn {
+  from { opacity:0; transform: translateY(8px); }
+  to { opacity:1; transform: translateY(0); }
 }
 
 /* Login Page Specific */
@@ -34,8 +46,10 @@ body{
   justify-content:center;
   gap:24px;
   padding:48px 24px;
+  animation: pageFadeIn .4s ease forwards;
 }
 
+/* ---------- Logo animation ---------- */
 .brand{
   display:flex;
   flex-direction:column;
@@ -43,10 +57,33 @@ body{
   justify-content:center;
   gap:10px;
   margin-bottom:12px;
+  animation: pageFadeIn .6s ease forwards;
 }
-.brand-logo{width:72px;height:72px;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.08);background:#0b63ff;padding:12px}
-.brand h1{margin:0;font-size:20px;color:var(--accent)}
-.subtitle{margin:0;color:var(--muted)}
+
+.brand-logo{
+  width:72px;
+  height:72px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(15,23,42,0.08);
+  background:#0b63ff;
+  padding:12px;
+  transition: transform .3s ease;
+}
+
+.brand-logo:hover{
+  transform: scale(1.05) rotate(-1deg);
+}
+
+.brand h1{
+  margin:0;
+  font-size:20px;
+  color:var(--accent);
+}
+
+.subtitle{
+  margin:0;
+  color:var(--muted);
+}
 
 .card{
   background:var(--card);
@@ -55,20 +92,100 @@ body{
   box-shadow: 0 12px 20px rgba(10,12,20,0.06);
   width:100%;
   max-width:420px;
+  animation: pageFadeIn .5s ease forwards;
 }
-.card-title{text-align:center;margin:0 0 18px;font-weight:600}
 
-.field{display:block;margin-bottom:14px}
-.label{font-size:13px;color:#333;margin-bottom:8px}
-.input-wrap{display:flex;align-items:center;background:#f2f4f6;border-radius:10px;padding:10px 12px}
-.input-wrap .icon{margin-right:10px;opacity:0.7}
-.input-wrap input{border:0;background:transparent;outline:none;font-size:14px;padding:6px 4px;width:100%}
+.card-title{
+  text-align:center;
+  margin:0 0 18px;
+  font-weight:600;
+}
 
-.btn-login{width:100%;margin-top:8px;background:#07060b;color:#fff;padding:12px;border-radius:10px;border:0;font-weight:600;cursor:pointer}
-.btn-login:hover{opacity:0.95}
-.forgot{text-align:center;margin-top:12px}
-.forgot a{color:#3677ff;text-decoration:none}
+/* ---------- Input animations ---------- */
+.field{
+  display:block;
+  margin-bottom:14px;
+}
 
+.label{
+  font-size:13px;
+  color:#333;
+  margin-bottom:8px;
+}
+
+.input-wrap{
+  display:flex;
+  align-items:center;
+  background:#f2f4f6;
+  border-radius:10px;
+  padding:10px 12px;
+  transition: box-shadow .2s ease, background-color .2s ease, transform .15s ease;
+}
+
+.input-wrap:hover{
+  background:#eef1f5;
+  transform: translateY(-1px);
+}
+
+.input-wrap:focus-within{
+  background:#fff;
+  box-shadow: 0 0 0 3px rgba(54,119,255,0.12);
+}
+
+.input-wrap .icon{
+  margin-right:10px;
+  opacity:0.7;
+}
+
+.input-wrap input{
+  border:0;
+  background:transparent;
+  outline:none;
+  font-size:14px;
+  padding:6px 4px;
+  width:100%;
+}
+
+/* ---------- Button animations ---------- */
+.btn-login{
+  width:100%;
+  margin-top:8px;
+  background:#07060b;
+  color:#fff;
+  padding:12px;
+  border-radius:10px;
+  border:0;
+  font-weight:600;
+  cursor:pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.btn-login:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.btn-login:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+/* ---------- Links ---------- */
+.forgot{
+  text-align:center;
+  margin-top:12px;
+}
+
+.forgot a{
+  color:#3677ff;
+  text-decoration:none;
+  transition: color .2s ease, text-decoration-color .2s ease;
+}
+
+.forgot a:hover{
+  text-decoration: underline;
+}
+
+/* ---------- Demo cards ---------- */
 .demo-section{
   display:flex;
   gap:16px;
@@ -89,6 +206,13 @@ body{
   gap:6px;
   flex:1;
   min-width:200px;
+  transition: transform .2s ease, box-shadow .2s ease;
+  animation: pageFadeIn .6s ease forwards;
+}
+
+.demo-card:hover{
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
 .demo-label{
@@ -112,12 +236,19 @@ body{
   font-weight:500;
   cursor:pointer;
   margin-top:4px;
+  transition: transform .15s ease, box-shadow .2s ease;
 }
 
 .demo-btn:hover{
   background:#2563ff;
+  transform: translateY(-1px);
 }
 
+.demo-btn:active{
+  transform: scale(0.98);
+}
+
+/* ---------- Mobile ---------- */
 @media (max-width:900px){
   .page-root{gap:20px}
   .page-root{padding:32px 16px}

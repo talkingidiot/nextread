@@ -361,3 +361,121 @@
     padding: 4px 8px;
   }
 }
+
+/* -------------------------------
+   MY RESERVATIONS – UI ANIMATIONS
+-------------------------------- */
+
+/* Page entrance */
+.reservations-page {
+  animation: reservationsFadeIn 0.4s ease forwards;
+}
+
+@keyframes reservationsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header interactions */
+.header-brand {
+  transition: transform .2s ease;
+}
+
+.header-brand:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.nav-btn:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn:active {
+  transform: scale(0.97) translateY(1px);
+}
+
+/* Tab animations */
+.tab-btn {
+  transition: color .2s ease, transform .15s ease;
+}
+
+.tab-btn:hover {
+  transform: translateY(-1px);
+}
+
+.tab-btn:active {
+  transform: scale(0.98);
+}
+
+/* Cards hover polish */
+.reservation-card {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* Book image hover */
+.reservation-image {
+  transition: transform .25s ease;
+}
+
+.reservation-image:hover {
+  transform: scale(1.03);
+}
+
+/* Button polish */
+.action-btn {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: scale(0.97);
+}
+
+/* List item entrance (stagger feel) */
+.reservation-card {
+  animation: cardFadeIn .3s ease both;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Empty state subtle pulse */
+.empty-state {
+  animation: emptyFade .3s ease;
+}
+
+@keyframes emptyFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

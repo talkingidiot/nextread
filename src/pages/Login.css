@@ -1,25 +1,245 @@
-.login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+/* -------------------------------
+   LOGIN PAGE – CLEAN ANIMATIONS
+-------------------------------- */
+
+.page-root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 48px 24px;
+  background: linear-gradient(180deg, #f8fbff 0%, #f7f2f9 100%);
+  animation: loginFadeIn 0.5s ease forwards;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo / brand animation */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: brandFadeIn 0.6s ease;
+}
+
+@keyframes brandFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: #0b63ff;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05) rotate(-1deg);
+}
+
+.subtitle {
+  color: #5f6368;
+  font-size: 14px;
+}
+
+/* Card animation */
+.card {
+  background: #fff;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 420px;
+  animation: cardPopIn 0.5s ease;
+}
+
+@keyframes cardPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.card-title {
+  margin: 0 0 18px;
   text-align: center;
 }
-.login-container input {
+
+/* Input animations */
+.field {
   display: block;
-  width: 100%;
-  margin: 10px 0;
-  padding: 8px;
+  margin-bottom: 14px;
 }
-.login-container button {
-  background-color: #007bff;
-  color: white;
+
+.label {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: #f2f4f6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: background-color .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+.input-wrap:hover {
+  background: #eef1f5;
+  transform: translateY(-1px);
+}
+
+.input-wrap:focus-within {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(11, 99, 255, 0.12);
+}
+
+.input-wrap .icon {
+  margin-right: 10px;
+  opacity: 0.7;
+}
+
+.input-wrap input {
   border: none;
-  padding: 10px;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
   width: 100%;
-  cursor: pointer;
 }
+
+/* Button animations */
+.btn-login {
+  width: 100%;
+  margin-top: 8px;
+  background: #0b1220;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.btn-login:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.btn-login:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-login:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Links */
+.forgot {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.forgot a {
+  color: #0b63ff;
+  text-decoration: none;
+}
+
+.forgot a:hover {
+  text-decoration: underline;
+}
+
+/* Demo cards animations */
+.demo-section {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  flex-wrap: wrap;
+}
+
+.demo-card {
+  background: #f0f4ff;
+  border: 1px solid #d0dcff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.demo-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+}
+
+.demo-btn {
+  background: #0b63ff;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.demo-btn:hover {
+  transform: translateY(-1px);
+}
+
+.demo-btn:active {
+  transform: scale(0.97);
+}
+
+/* Error styles */
 .error {
   color: red;
+  margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .card {
+    padding: 22px;
+  }
+
+  .demo-section {
+    flex-direction: column;
+  }
 }

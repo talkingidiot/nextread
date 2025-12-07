@@ -332,3 +332,125 @@
     gap: 12px;
   }
 }
+
+/* -------------------------------
+   HOME PAGE – UI ANIMATIONS
+-------------------------------- */
+
+/* Page fade-in */
+.home-page {
+  animation: homeFadeIn .4s ease forwards;
+}
+
+@keyframes homeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header micro-motions */
+.header-brand {
+  transition: transform .2s ease;
+}
+
+.header-brand:hover {
+  transform: translateY(-1px);
+}
+
+/* Nav buttons */
+.nav-btn {
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.nav-btn:hover {
+  transform: translateY(-1px);
+}
+
+.nav-btn:active {
+  transform: scale(0.97) translateY(1px);
+}
+
+/* Search bar interaction */
+.search-input {
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+
+.search-input:focus {
+  transform: translateY(-1px);
+}
+
+/* Carousel arrows */
+.arrow-btn {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.arrow-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.arrow-btn:active {
+  transform: scale(0.95);
+}
+
+/* Book cards animation */
+.book-card {
+  transition: transform .2s ease, box-shadow .25s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+/* Genre buttons */
+.genre-btn {
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.genre-btn:hover {
+  transform: translateY(-1px);
+}
+
+.genre-btn:active {
+  transform: scale(0.97);
+}
+
+/* Grid cards smooth entry */
+.book-card-grid {
+  animation: cardFadeIn .25s ease both;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section soft fade */
+.popular-section,
+.genre-section,
+.all-books-section,
+.search-section {
+  animation: sectionFade .35s ease forwards;
+}
+
+@keyframes sectionFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

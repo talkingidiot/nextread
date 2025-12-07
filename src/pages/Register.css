@@ -120,3 +120,94 @@
     font-size: 0.95rem;
   }
 }
+
+/* -------------------------------
+   REGISTER PAGE – UI ANIMATIONS
+-------------------------------- */
+
+/* Page entrance */
+.page-root {
+  animation: registerFadeIn 0.45s ease forwards;
+}
+
+@keyframes registerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Brand hover polish */
+.brand {
+  animation: brandFloatIn 0.5s ease;
+}
+
+@keyframes brandFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-logo {
+  transition: transform .3s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05) rotate(-1deg);
+}
+
+/* Card entrance */
+.card {
+  animation: cardFadeIn 0.4s ease;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Input hover */
+.register-form .input-wrap {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.register-form .input-wrap:hover {
+  transform: translateY(-1px);
+}
+
+/* Button micro-interactions */
+.btn-register {
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.btn-register:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.btn-register:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Link micro animations */
+.login-link a {
+  transition: color .2s ease, transform .15s ease;
+}
+
+.login-link a:hover {
+  transform: translateY(-1px);
+}
